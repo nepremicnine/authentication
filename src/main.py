@@ -77,8 +77,6 @@ async def delete_user(request: DeleteUserRequest):
             "password": request.password
         })
 
-        print(user)
-
         # Delete user
         deleted_user = supabase.auth.admin.delete_user(user.user.id)
 
