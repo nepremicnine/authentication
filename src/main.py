@@ -1,14 +1,21 @@
 # Authentication/main.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Request, Header
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from supabase import create_client, Client
-from models import SignupRequest, LoginRequest, UpdatePasswordRequest, DeleteUserRequest
+from models import SignupRequest, LoginRequest, UpdatePasswordRequest, DeleteUserRequest, RefreshTokenRequest
 import os
 from dotenv import load_dotenv  # Import dotenv
+from auth_handler import verify_jwt_token
+from create_client_jwt import create_client_jwt
+import httpx
+
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = FastAPI()
+security = HTTPBearer()
+
 
 # Replace these with your actual Supabase URL and API key
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -84,3 +91,54 @@ async def delete_user(request: DeleteUserRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
+
+@app.get("/auth/me",dependencies=[Depends(verify_jwt_token)])
+async def get_user_details():
+    try:
+        response = supabase.auth.get_user()
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+@app.post("/refresh_token/",dependencies=[Depends(verify_jwt_token)])
+async def refresh_token(request: RefreshTokenRequest, credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+
+        # Read the token from the Authorization header
+        token = credentials.credentials
+        print("Token:", token)
+
+        # Prepare the refresh token request
+        url = f"{SUPABASE_URL}/auth/v1/token?grant_type=refresh_token"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Content-Type": "application/json",
+        }
+        payload = {"refresh_token": request.refresh_token}
+
+        # Make an async request to refresh the token
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, json=payload, headers=headers)
+        
+        # Check for successful response
+        if response.status_code == 200:
+            data = response.json()
+            print("Data:", data)
+            return {
+                "accessToken": data.get("access_token"),
+                "refreshToken": data.get("refresh_token"),
+            }
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=response.json().get("error", "Error refreshing access token"),
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e) or "Unexpected error refreshing access token.",
+        )
+    
+
+        

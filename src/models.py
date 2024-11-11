@@ -44,3 +44,6 @@ class UpdatePasswordRequest(BaseModel):
 class DeleteUserRequest(BaseModel):
     email: EmailStr
     password: str
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
