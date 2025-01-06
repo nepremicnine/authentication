@@ -19,16 +19,26 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SUPABASE_SERVICE_KEY
+            - name: SUPABASE_SERVICE_ROLE_KEY
               valueFrom:
                 secretKeyRef:
                   name: secrets
-                  key: SUPABASE_SERVICE_KEY
-            - name: STRIPE_SECRET_KEY
+                  key: SUPABASE_SERVICE_ROLE_KEY
+            - name: SUPABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: secrets
-                  key: STRIPE_SECRET_KEY
+                  key: SUPABASE_URL
+            - name: SUPABASE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: SUPABASE_KEY
+            - name: SUPABASE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: SUPABASE_JWT_SECRET
           resources:
             limits:
               cpu: "0.1"
