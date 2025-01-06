@@ -6,3 +6,4 @@ pydantic[email]==2.6.3
 pyjwt==2.9.0
 python-dotenv==1.0.1
 httpx==0.25.2
+gotrue==2.1.0

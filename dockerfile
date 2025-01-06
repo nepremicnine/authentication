@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and set the working directory
-WORKDIR /app
+# Set the working directory to the root of the project
+WORKDIR /authentication
 
 # Install pip and upgrade it
 RUN pip install --upgrade pip setuptools wheel
@@ -22,7 +22,7 @@ RUN pip install --upgrade pip setuptools wheel
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code
+# Copy the entire project to the working directory
 COPY . .
 
 # Expose the application port
