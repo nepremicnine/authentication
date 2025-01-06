@@ -16,13 +16,6 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - name: Debug secrets
-        run: echo "DOCKERHUB_USERNAME is ${{ secrets.DOCKERHUB_USERNAME }}"
-      - name: Debug secrets
-        run: echo "DOCKERHUB_PASSWORD is ${{ secrets.DOCKERHUB_PASSWORD }}"
-      - name: Debug secrets
-        run: echo "AZURE_CREDENTIALS is ${{ secrets.AZURE_CREDENTIALS }}"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
