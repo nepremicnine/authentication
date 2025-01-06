@@ -5,7 +5,6 @@ on:
     branches: ["main"]
 
 env:
-  CONTAINER_NAME: "potocnikvid/nepremicnine-authentication"
   RESOURCE_GROUP: "nepremicnine-resource-group-prod"
   CLUSTER_NAME: "nepremicnine-cluster-prod"
 
@@ -33,11 +32,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ env.CONTAINER_NAME }}:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nepremicnine-authentication:${{ github.sha }}
+        retry: 3
+
   deploy:
     permissions:
       actions: read
@@ -75,4 +76,4 @@ jobs:
           manifests: |
             ./kubernetes/deployment.yaml
             ./kubernetes/service.yaml
-          images: ${{ env.CONTAINER_NAME }}:${{ github.sha }}
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/nepremicnine-authentication:${{ github.sha }}
