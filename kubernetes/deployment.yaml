@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentication
+  namespace: nepremicnine
+spec:
+  selector:
+    matchLabels:
+      app: authentication
+  template:
+    metadata:
+      labels:
+        app: authentication
+    spec:
+      containers:
+        - name: authentication
+          image: nepremicnine/authentication
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SUPABASE_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: SUPABASE_SERVICE_KEY
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: STRIPE_SECRET_KEY
+          resources:
+            limits:
+              cpu: "0.1"
+              memory: "256Mi"
+            requests:
+              cpu: "0.01"
+              memory: "32Mi"
+          readinessProbe:
+            httpGet:
+              path: /auth/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 30
+            successThreshold: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /auth/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10

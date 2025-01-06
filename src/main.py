@@ -140,5 +140,9 @@ async def refresh_token(request: RefreshTokenRequest, credentials: HTTPAuthoriza
             detail=str(e) or "Unexpected error refreshing access token.",
         )
     
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+    
 
         
