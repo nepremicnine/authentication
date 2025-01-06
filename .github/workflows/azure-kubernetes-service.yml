@@ -9,6 +9,7 @@ env:
   RESOURCE_GROUP: "nepremicnine-resource-group-prod"
   CLUSTER_NAME: "nepremicnine-cluster-prod"
 
+
 jobs:
   build:
     permissions:
