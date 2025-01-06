@@ -2,11 +2,11 @@
 from fastapi import FastAPI, HTTPException, Depends, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from supabase import create_client, Client
-from models import SignupRequest, LoginRequest, UpdatePasswordRequest, DeleteUserRequest, RefreshTokenRequest
+from src.models import SignupRequest, LoginRequest, UpdatePasswordRequest, DeleteUserRequest, RefreshTokenRequest
 import os
 from dotenv import load_dotenv  # Import dotenv
-from auth_handler import verify_jwt_token
-from create_client_jwt import create_client_jwt
+from src.auth_handler import verify_jwt_token
+from src.create_client_jwt import create_client_jwt
 import httpx
 
 
