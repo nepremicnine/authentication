@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 env:
-  CONTAINER_NAME: "nepremicnine/authentication"
+  CONTAINER_NAME: "potocnikvid/nepremicnine-authentication"
   RESOURCE_GROUP: "nepremicnine-resource-group-prod"
   CLUSTER_NAME: "nepremicnine-cluster-prod"
 
