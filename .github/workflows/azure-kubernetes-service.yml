@@ -37,7 +37,6 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/nepremicnine-authentication:${{ github.sha }}
-        retry: 3
 
   deploy:
     permissions:
