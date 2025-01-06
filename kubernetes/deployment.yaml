@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: authentication
-          image: nepremicnine/authentication
+          image: potocnikvid/nepremicnine-authentication
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
