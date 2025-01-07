@@ -46,18 +46,20 @@ spec:
             requests:
               cpu: "0.01"
               memory: "32Mi"
-          readinessProbe:
-            httpGet:
-              path: /authentication/health
-              port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 30
-            successThreshold: 10
-            failureThreshold: 30
-          livenessProbe:
-            httpGet:
-              path: /authentication/health
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
+          readinessProbe: null
+          livenessProbe: null
+          # readinessProbe:
+          #   httpGet:
+          #     path: /authentication/health
+          #     port: 8080
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 30
+          #   timeoutSeconds: 30
+          #   successThreshold: 10
+          #   failureThreshold: 30
+          # livenessProbe: null
+          #   httpGet:
+          #     path: /authentication/health
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
