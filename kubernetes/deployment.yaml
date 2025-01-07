@@ -40,9 +40,15 @@ spec:
                   name: secrets
                   key: SUPABASE_JWT_SECRET
             - name: AUTHENTICATION_SERVER_MODE
-              value: "release"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: AUTHENTICATION_SERVER_MODE
             - name: AUTHENTICATION_SERVER_PORT
-              value: "8080"
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: AUTHENTICATION_SERVER_PORT
           resources:
             limits:
               cpu: "0.1"
