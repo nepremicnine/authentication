@@ -5,6 +5,13 @@ import re
 class SignupRequest(BaseModel):
     email: EmailStr
     password: str
+    first_name: str
+    last_name: str
+    location_id: str
+    location_name: str
+    lat: float
+    long: float
+
 
     # Custom password validation
     @validator("password")

@@ -55,7 +55,13 @@ async def signup(request: SignupRequest):
     try:
         user = supabase.auth.sign_up({
             "email": request.email,
-            "password": request.password
+            "password": request.password,
+            "first_name": request.first_name,
+            "last_name": request.last_name,
+            "location_id": request.location_id,
+            "location": request.location_name,
+            "latitude": request.lat,
+            "longitude": request.long
         })
         return user
     except Exception as e:
