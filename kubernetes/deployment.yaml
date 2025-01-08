@@ -43,6 +43,16 @@ spec:
               value: "release"
             - name: AUTHENTICATION_SERVER_PORT
               value: "8080"
+            - name: FRONTEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: FRONTEND_URL
+            - name: USER_MANAGING_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: USER_MANAGING_API_URL
           resources:
             limits:
               cpu: "0.1"
