@@ -7,7 +7,6 @@ class SignupRequest(BaseModel):
     password: str
     first_name: str
     last_name: str
-    location_id: str
     location_name: str
     lat: float
     long: float

@@ -58,7 +58,6 @@ async def signup(request: SignupRequest):
             "password": request.password,
             "first_name": request.first_name,
             "last_name": request.last_name,
-            "location_id": request.location_id,
             "location": request.location_name,
             "latitude": request.lat,
             "longitude": request.long
