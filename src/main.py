@@ -20,6 +20,7 @@ AUTHENTICATION_HTTP_SERVER_PORT = int(
     os.getenv("AUTHENTICATION_HTTP_SERVER_PORT", 8080))
 AUTHENTICATION_PREFIX = f"/authentication" if AUTHENTICATION_SERVER_MODE == "release" else ""
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:8080")
+USER_MANAGEMENT_API_URL = os.getenv("USER_MANAGEMENT_API_URL")
 
 # FastAPI app
 app = FastAPI(
@@ -73,6 +74,38 @@ async def signup(request: SignupRequest):
             "email": request.email,
             "password": request.password,
         })
+
+        if user:
+            # Call an API for user management here
+            user_data = {
+                "id": user.user.id,
+                "email": request.email,
+                "first_name": request.first_name,
+                "last_name": request.last_name,
+                "location": request.location_name,
+                "latitude": request.lat,
+                "longitude": request.long,
+            }
+
+            headers = {
+                "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+                "Content-Type": "application/json",
+            }
+
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{USER_MANAGEMENT_API_URL}/users",
+                    json=user_data,
+                    headers=headers,
+                )
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=response.json().get("message", "Error creating user in user management API"),
+                )
+
+            return user
 
         return user
     except Exception as e:
