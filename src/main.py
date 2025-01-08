@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv  # Import dotenv
 from src.auth_handler import verify_jwt_token
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,6 +19,7 @@ AUTHENTICATION_SERVER_MODE = os.getenv("AUTHENTICATION_SERVER_MODE", "debug")
 AUTHENTICATION_HTTP_SERVER_PORT = int(
     os.getenv("AUTHENTICATION_HTTP_SERVER_PORT", 8080))
 AUTHENTICATION_PREFIX = f"/authentication" if AUTHENTICATION_SERVER_MODE == "release" else ""
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:8080")
 
 # FastAPI app
 app = FastAPI(
@@ -27,6 +29,20 @@ app = FastAPI(
     openapi_url=f"{AUTHENTICATION_PREFIX}/openapi.json",
     docs_url=f"{AUTHENTICATION_PREFIX}/docs",
     redoc_url=f"{AUTHENTICATION_PREFIX}/redoc",
+)
+
+origins = [
+    FRONTEND_URL,
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Security and Supabase configurations
@@ -56,12 +72,8 @@ async def signup(request: SignupRequest):
         user = supabase.auth.sign_up({
             "email": request.email,
             "password": request.password,
-            "first_name": request.first_name,
-            "last_name": request.last_name,
-            "location": request.location_name,
-            "latitude": request.lat,
-            "longitude": request.long
         })
+
         return user
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
