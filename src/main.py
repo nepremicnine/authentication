@@ -20,6 +20,7 @@ AUTHENTICATION_HTTP_SERVER_PORT = int(
     os.getenv("AUTHENTICATION_HTTP_SERVER_PORT", 8080))
 AUTHENTICATION_PREFIX = f"/authentication" if AUTHENTICATION_SERVER_MODE == "release" else ""
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 USER_MANAGING_API_URL = os.getenv("USER_MANAGING_API_URL")
 
 # FastAPI app
@@ -34,6 +35,7 @@ app = FastAPI(
 
 origins = [
     FRONTEND_URL,
+    BACKEND_URL,
     "http://localhost",
     "http://localhost:3000",
 ]
