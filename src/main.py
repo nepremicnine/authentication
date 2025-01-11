@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from supabase import create_client, Client
 from src.models import (
@@ -10,6 +10,9 @@ from dotenv import load_dotenv  # Import dotenv
 from src.auth_handler import verify_jwt_token
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Counter, Summary
+from time import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -61,9 +64,34 @@ if not SUPABASE_URL or not SUPABASE_KEY or not SUPABASE_SERVICE_ROLE_KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 supabase_admin: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
+
+
+# Initialize Prometheus instrumentator
+Instrumentator().instrument(app).expose(app, endpoint=f"{AUTHENTICATION_PREFIX}/metrics")
+
+# Additional custom metrics
+REQUEST_COUNT = Counter('request_count', 'Total number of requests', ['method', 'endpoint', 'status_code'])
+REQUEST_LATENCY = Summary('request_latency_seconds', 'Latency of requests in seconds')
+
+@app.middleware("http")
+async def add_prometheus_metrics(request: Request, call_next):
+    start_time = time()
+    response = await call_next(request)
+    process_time = time() - start_time
+
+    # Record custom metrics
+    REQUEST_COUNT.labels(
+        method=request.method,
+        endpoint=request.url.path,
+        status_code=response.status_code
+    ).inc()
+
+    REQUEST_LATENCY.observe(process_time)
+
+    return response
+
+
 # Endpoints
-
-
 @app.get(f"{AUTHENTICATION_PREFIX}/")
 async def root():
     return {"message": "Hello World"}
